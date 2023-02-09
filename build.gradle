@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "io.freefair.lombok" version "6.6.1"
 }
 
 group 'org.example'
@@ -16,9 +17,11 @@ compileTestJava {
 
 dependencies {
     testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.9.2',
+            'org.junit.jupiter:junit-jupiter:5.9.2',
             'org.slf4j:slf4j-simple:2.0.6',
-            'io.rest-assured:rest-assured:5.3.0'
+            'io.rest-assured:rest-assured:5.3.0',
+            'com.fasterxml.jackson.core:jackson-databind:2.14.2',
+            'org.aeonbits.owner:owner:1.0.12'
     )
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.9.2')
 }

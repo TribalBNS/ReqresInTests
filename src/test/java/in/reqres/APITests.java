@@ -1,47 +1,50 @@
+package in.reqres;
+
+import in.reqres.models.getuserspage.BaseModel;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static in.reqres.Specs.request;
+import static in.reqres.Specs.response;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 
-public class ReqresInTests {
+public class APITests {
 
     @Test
     void checkListOfUsersFirstPageTest() {
         given()
-                .log().uri()
+                .spec(request)
                 .when()
-                .get("https://reqres.in/api/users?page=1")
+                .get("/users?page=1")
                 .then()
-                .log().status()
-                .statusCode(200)
-                .log().body()
-                .body("data.id", is(notNullValue()));
+                .spec(response)
+                .body("data.findAll{it.last_name =~/.*?is/}.last_name.flatten()",
+                        hasItem("Morris"));
     }
 
     @Test
     void checkListOfUsersFifthPageTest() {
-        given()
-                .log().uri()
+        BaseModel model = given()
+                .spec(request)
                 .when()
-                .get("https://reqres.in/api/users?page=5")
+                .get("/users?page=2")
                 .then()
-                .log().status()
-                .statusCode(200)
-                .log().body()
-                .body("data", is(empty()));
+                .spec(response)
+                .extract().as(BaseModel.class);
+        Assertions.assertEquals(6, model.getPerPage());
+
     }
 
     @Test
     void checkSingleUserNameTest() {
         given()
-                .log().uri()
+                .spec(request)
                 .when()
                 .get("https://reqres.in/api/users/5")
                 .then()
-                .log().status()
-                .statusCode(200)
-                .log().body()
+                .spec(response)
                 .body("data.first_name", is("Charles"));
     }
 
